@@ -3,74 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mga Kwentong Pambata ni Boknoy</title>
+    <title>Alamat ng Pinya</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <style>
-      body {
-        font-family: "Lato", sans-serif;
-        margin: 0;
-      }
-
-      main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-      }
-
-      .story-section {
-        max-width: 500px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2rem;
-      }
-
-      img {
-        margin-top: 1rem;
-        text-align: center;
-        width: 60%;
-        height: auto;
-      }
-
-      @media (max-width: 500px) {
-        .story-section {
-          gap: 1rem;
-          padding: 1rem;
-        }
-
-        img {
-          margin-top: 0;
-          width: 100%;
-        }
-      }
-
-      h1 {
-        margin: 0;
-      }
-
-      p {
-        text-align: justify;
-        margin: 0;
-        line-height: 1.5;
-      }
-
-      .callout {
-        width: 100%;
-        background-color: #f5f8fa;
-        padding: 1rem;
-        font-style: italic;
-        text-align: left;
-        box-shadow: inset 4px 0 0 0 #242424;
-      }
+      body{font-family:"Lato",sans-serif;margin:0}main{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%} .story-section{max-width:500px;display:flex;flex-direction:column;align-items:center;gap:2rem}img{margin-top:1rem;text-align:center;width:60%;height:auto}@media (max-width:500px){.story-section{gap:1rem;padding:1rem}img{margin-top:0;width:100%}}h1{margin:0}p{text-align:justify;margin:0;line-height:1.5}.callout{width:100%;background-color:#f5f8fa;padding:1rem;font-style:italic;text-align:left;box-shadow:inset 4px 0 0 0 #242424}.comment-form{display:flex;flex-direction:column;gap:1rem;width:100%;max-width:500px;margin-bottom:1rem}.comment-form label{font-weight:bold}.comment-form input,.comment-form textarea{padding:1rem;border:1px solid #ccc;border-radius:4px}.comment-form button{align-self:flex-start;width:100%;padding:1rem;background-color:#242424;color:#fff;border:none;font-size:16px;border-radius:4px;cursor:pointer}.comment-form button:hover{background-color:#444}
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   </head>
   <body>
     <main>
@@ -183,7 +124,7 @@
           may makatagpo sa kanya.
         </p>
 
-        <form action="/submit-comment" method="post" class="comment-form">
+        <form id="commentForm" class="comment-form">
           <h2>Leave A Comment</h2>
           <textarea
             id="comment"
@@ -195,91 +136,37 @@
 
           <button type="submit">Send Comment</button>
         </form>
-
-        <style>
-          .comment-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 1rem;
-          }
-
-          .comment-form label {
-            font-weight: bold;
-          }
-
-          .comment-form input,
-          .comment-form textarea {
-            padding: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-          }
-
-          .comment-form button {
-            align-self: flex-start;
-            width: 100%;
-            padding: 1rem;
-            background-color: #242424;
-            color: #fff;
-            border: none;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-
-          .comment-form button:hover {
-            background-color: #444;
-          }
-        </style>
       </div>
     </main>
 
     <script>
-      // Wait until the script is fully loaded before using the Supabase client
-      window.onload = function () {
-        const supabaseUrl = 'https://zlxigvzatehrzcthylwq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpseGlndnphdGVocnpjdGh5bHdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNDUwMTcsImV4cCI6MjA1OTYyMTAxN30.JRvZrgX13hQX-0K_I-4yTmgthGnu-lhxhsCcxEtBdIE';
-        
-        // Initialize Supabase client after the script has been loaded
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // Add event listener for form submission or other interactions
-        const form = document.getElementById('comment-form');
-        form.addEventListener('submit', async (event) => {
-          event.preventDefault();  // Prevent the default form submission
-    
-          // Get form values
-          const rating = document.getElementById('story-rating').value;
-          const comment = document.getElementById('comment').value;
-    
-          try {
-            // Insert feedback into Supabase table
-            const { data, error } = await supabase
-              .from('feedbacks')  // Replace 'feedbacks' with your table name
-              .insert([
-                {
-                  rating: rating,
-                  comment: comment,
-                  created_at: new Date().toISOString()  // Add a timestamp
-                }
-              ]);
-    
-            if (error) {
-              throw error;
+      $(document).ready(function () {
+        $('#commentForm').submit(function (event) {
+          event.preventDefault(); 
+          $.ajax({
+            url: 'https://zlxigvzatehrzcthylwq.supabase.co/rest/v1/comment',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpseGlndnphdGVocnpjdGh5bHdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNDUwMTcsImV4cCI6MjA1OTYyMTAxN30.JRvZrgX13hQX-0K_I-4yTmgthGnu-lhxhsCcxEtBdIE`,
+              'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpseGlndnphdGVocnpjdGh5bHdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNDUwMTcsImV4cCI6MjA1OTYyMTAxN30.JRvZrgX13hQX-0K_I-4yTmgthGnu-lhxhsCcxEtBdIE`,
+            },
+            data: JSON.stringify({
+              comment: $('#comment').val(),
+              story: "Alamat ng Pinya",
+              created_at: new Date().toISOString()
+            }),
+            success: function (response) {
+              alert('Feedback submitted successfully!');
+              location.reload()
+            },
+            error: function (xhr, status, error) {
+              alert('Error submitting feedback: ' + error);
+              console.error('Error:', error);
             }
-    
-            // Success feedback
-            alert('Thank you for your feedback!');
-            form.reset();  // Optionally reset the form
-    
-          } catch (error) {
-            console.error('Error inserting feedback:', error);
-            alert('Sorry, there was an issue submitting your feedback.');
-          }
+          });
         });
-      };
+      });
     </script>
   </body>
 </html>
